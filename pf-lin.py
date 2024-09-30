@@ -6,19 +6,19 @@ from string import ascii_lowercase as lc, ascii_uppercase as uc
 def rot_enc(n):
     lookup = str.maketrans(lc + uc, lc[n:] + lc[:n] + uc[n:] + uc[:n])
     return lambda s: s.translate(lookup)
+
 def rot_dec(n):
     return rot_enc(-n)
 
 format = '%(asctime)s - %(filename)s:%(lineno)d - %(levelname)s: %(message)s'
 logging.basicConfig(level=logging.INFO, format=format)
 
-
 def handle(buffer, direction, src_address, src_port, dst_address, dst_port) -> bytes:
     if direction:
-        bydata=rot_enc(key)(buffer.decode()).encode()
+        bydata = rot_enc(key)(buffer.decode()).encode()
         logging.debug(f"{src_address, src_port} -> {dst_address, dst_port} {len(buffer)} bytes")
     else:
-        bydata=rot_dec(-key)(buffer.decode()).encode()
+        bydata = rot_dec(-key)(buffer.decode()).encode()
         logging.debug(f"{src_address, src_port} <- {dst_address, dst_port} {len(bydata)} bytes")
     return bydata.decode()
 
@@ -34,11 +34,12 @@ def transfer(src, dst, direction):
         except Exception as e:
             logging.error(repr(e))
             break
-    logging.warning(f"Closing connect {src_address, src_port}! ")
-    src.close()
-    logging.warning(f"Closing connect {dst_address, dst_port}! ")
-    dst.close()
+    finally:
+        logging.warning(f"Closing connect {src_address, src_port}! ")
 
+        src.close()
+        logging.warning(f"Closing connect {dst_address, dst_port}! ")
+        dst.close()
 
 def server(local_host, local_port, remote_host, remote_port):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -61,13 +62,14 @@ def server(local_host, local_port, remote_host, remote_port):
         except Exception as e:
             logging.error(repr(e))
 
-
 def main():
-    #server(listen_host, listen_port, connect_host, connect_port)
-    server("127.0.0.1", 5555, "127.0.0.1", 7777)
-
+    while True:
+        try:
+            passw = input("Enter pass: ")
+            key = sum(map(ord, passw))
+            server("127.0.0.1", 5555, "127.0.0.1", 7777)
+        except KeyboardInterrupt:
+            print("Enter pass: ")
 
 if __name__ == "__main__":
-    passw=input("Enter pass: ")
-    key=sum(map(ord, passw))
-    main()  
+    main()
