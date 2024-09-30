@@ -1,6 +1,6 @@
 #/bin/bash
-host_name=host
-client_name=client
+host_name=""
+client_name=""
 port=9999
 input=/tmp/chat-receive-$port
 output=/tmp/chat-sending-$port
@@ -10,8 +10,8 @@ rm -f $output
 mkfifo $input 2>/dev/null
 mkfifo $output 2>/dev/null
 
-for i in ./include/*;
-  do import $i 2>/dev/null
+for i in ./include/*; do
+  import $i 2>/dev/null
 done
 
 read -r -p 'Enter username: ' host_name
@@ -23,3 +23,4 @@ echo "$client_name has joined the chat"
 echo "Joined $host_name's chat" > $output
 receive &
 chat
+
