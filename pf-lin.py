@@ -13,12 +13,17 @@ format = '%(asctime)s - %(filename)s:%(lineno)d - %(levelname)s: %(message)s'
 logging.basicConfig(level=logging.INFO, format=format)
 
 
+# Key generation is consistent and uniform for both cases
+key = sum(map(lambda c: (ord(c) - 96) if c.islower() else (ord(c) - 64), passw))
+
 def handle(buffer, direction, src_address, src_port, dst_address, dst_port) -> bytes:
     if direction:
-        bydata=rot_enc(key)(buffer.decode()).encode()
+        # Encrypt using the same key
+        bydata = rot_enc(key)(buffer.decode()).encode()
         logging.debug(f"{src_address, src_port} -> {dst_address, dst_port} {len(buffer)} bytes")
     else:
-        bydata=rot_dec(-key)(buffer.decode()).encode()
+        # Decrypt using the same key (no negation needed)
+        bydata = rot_dec(key)(buffer.decode()).encode()
         logging.debug(f"{src_address, src_port} <- {dst_address, dst_port} {len(bydata)} bytes")
     return bydata
 
