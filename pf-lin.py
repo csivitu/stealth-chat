@@ -20,7 +20,7 @@ def handle(buffer, direction, src_address, src_port, dst_address, dst_port) -> b
     else:
         bydata=rot_dec(-key)(buffer.decode()).encode()
         logging.debug(f"{src_address, src_port} <- {dst_address, dst_port} {len(bydata)} bytes")
-    return bydata.decode()
+    return bydata
 
 def transfer(src, dst, direction):
     src_address, src_port = src.getsockname()
