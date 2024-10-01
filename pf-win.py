@@ -8,7 +8,8 @@ def rot_enc(n):
     return lambda s: s.translate(lookup)
 
 def rot_dec(n):
-    return rot_enc(-n)
+    lookup = str.maketrans(lc + uc, lc[-n:] + lc[:-n] + uc[-n:] + uc[:-n])
+    return lambda s: s.translate(lookup)
 
 format = '%(asctime)s - %(filename)s:%(lineno)d - %(levelname)s: %(message)s'
 logging.basicConfig(level=logging.INFO, format=format)
