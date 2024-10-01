@@ -11,7 +11,7 @@ mkfifo $input 2>/dev/null
 mkfifo $output 2>/dev/null
 
 for i in ./include/*;
-  do import $i 2>/dev/null
+  do source $i 2>/dev/null
 done
 
 read -r -p 'Enter username: ' host_name
