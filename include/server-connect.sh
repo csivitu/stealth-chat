@@ -13,7 +13,7 @@ deallocate(){
 server() {
   allocate
   echo "Starting on port $port"
-  tail -f $output | ncat -l -p $port > $input
+  ncat -l -p $port > $input &
   echo "server ending"
   deallocate
 }
